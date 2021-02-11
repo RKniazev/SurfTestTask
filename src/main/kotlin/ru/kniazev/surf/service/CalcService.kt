@@ -32,11 +32,11 @@ class CalcService(
     fun validateData(string: String){
         val regexBrackets = "\\(|\\)"
         if(regexBrackets.toRegex().findAll(string).count()%2!=0){
-            throw NotEqualCountBracketsException(null)
+            throw NotEqualCountBracketsException()
         }
         val regexInt = "\\,|\\."
         if(regexInt.toRegex().findAll(string).count()>0){
-            throw InputNotOnlyInteger(null)
+            throw InputNotOnlyInteger()
         }
     }
 }

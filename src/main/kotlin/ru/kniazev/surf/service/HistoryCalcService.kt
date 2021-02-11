@@ -23,7 +23,7 @@ class HistoryCalcService(@Autowired val rep:CalcRepository,
 
         if (dateFrom != null && dateTo != null){
             if (dateFrom>dateTo){
-                throw DatesInputException(null)
+                throw DatesInputException()
             }
             return rep.findByRequestAndUserAndDate(
                     dateFrom,
