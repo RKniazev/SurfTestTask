@@ -74,6 +74,22 @@ internal class MathServiceTest {
         assertEquals("15",service.calculate("(1+2)*(4+(5-6/3*2))"))
     }
     @Test
+    fun `Result calculate should be 11 in (10-11)+(-12)*(-1)`(){
+        assertEquals("11",service.calculate("(10-11)+[-12]*[-1]"))
+    }
+    @Test
+    fun `Result calculate should be 5 in (10-11)+(-12)mod(-2)`(){
+        assertEquals("5",service.calculate("(10-11)+[-12]/[-2]"))
+    }
+    @Test
+    fun `Result calculate should be -15 in (10-11)+(-12)+(-2)`(){
+        assertEquals("-15",service.calculate("(10-11)+[-12]+[-2]"))
+    }
+    @Test
+    fun `Result calculate should be -15 in (10-11)+(-12)-(-2)`(){
+        assertEquals("-11",service.calculate("(10-11)+[-12]-[-2]"))
+    }
+    @Test
     fun `Next action should be * in 1+2*4+5-6mod3*2`(){
         assertEquals('*',service.findNextAction("1+2*4+5-6/3*2"))
     }
