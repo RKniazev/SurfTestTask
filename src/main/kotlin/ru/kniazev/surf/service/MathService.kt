@@ -58,12 +58,13 @@ class MathService {
     }
 
     fun tmpAction(str: String, act: Char):String{
-        val parts = str.split(act)
+        val parts = str.replace("[-","[[").split(act)
         if (isNegative(str)){
             return addSpecSymbolForNegative(str.toInt())
         }
-        val num1 = findLast(parts[0])
-        val num2 = findFirst(parts[1])
+        var num1 = findLast(parts[0].replace("[[","[-"))
+        var num2 = findFirst(parts[1].replace("[[","[-"))
+
 
         return when(act){
             '*' -> str.replaceFirst(oldPartOfStr(num1,act,num2),addSpecSymbolForNegative((num1*num2)))
