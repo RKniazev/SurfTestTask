@@ -1,5 +1,8 @@
 package ru.kniazev.surf.service
 
+import InputNotOnlyInteger
+import NotEqualCountBracketsException
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -34,6 +37,27 @@ internal class CalcServiceTest {
         assertEquals("surf", result[0].user?.login)
     }
 
+    @Test
+    fun `Check exception NotEqualCountBracketsException`() {
+        val exception = Assertions.assertThrows(NotEqualCountBracketsException::class.java) {
+            service.start("2+(2+2", "surf")
+        }
+        Assertions.assertEquals("The math task has not balance \"(\" and \")\"", exception.message)
+    }
 
+    @Test
+    fun `Check exception for InputNotOnlyInteger for input with dot`() {
+        val exception = Assertions.assertThrows(InputNotOnlyInteger::class.java) {
+            service.start("2+2.5+2", "surf")
+        }
+        Assertions.assertEquals("The math task has not only integers. It version can math only integers.", exception.message)
+    }
 
+    @Test
+    fun `Check exception for InputNotOnlyInteger for input with comma`() {
+        val exception = Assertions.assertThrows(InputNotOnlyInteger::class.java) {
+            service.start("2+2,5+2", "surf")
+        }
+        Assertions.assertEquals("The math task has not only integers. It version can math only integers.", exception.message)
+    }
 }

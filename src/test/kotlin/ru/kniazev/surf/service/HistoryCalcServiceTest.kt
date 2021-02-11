@@ -1,5 +1,7 @@
 package ru.kniazev.surf.service
 
+import DatesInputException
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -145,5 +147,13 @@ internal class HistoryCalcServiceTest {
         assertEquals("6", result[3].response)
         assertEquals(repUser.findById(2).get(), result[3].user)
 
+    }
+
+    @Test
+    fun `Check exception for InputNotOnlyInteger for input with comma`() {
+        val exception = Assertions.assertThrows(DatesInputException::class.java) {
+            service.getCalcHistory("2021-02-10", "2021-02-09", null, null)
+        }
+        Assertions.assertEquals("Params has error - dateFrom more than dateTo", exception.message)
     }
 }
