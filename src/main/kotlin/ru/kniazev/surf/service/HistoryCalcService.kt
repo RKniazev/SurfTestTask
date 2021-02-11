@@ -12,14 +12,14 @@ import java.time.LocalDate
 class HistoryCalcService(@Autowired val rep:CalcRepository,
                          @Autowired val repUser:UserRepository) {
 
-    fun getCalcHistory(date1:String?,
-                       date2:String?,
+    fun getCalcHistory(dateStrFrom:String?,
+                       dareStrTo:String?,
                        request: String?,
                        userLogin:String?):List<CalcEntity>{
 
         val user  = userLogin?.let { repUser.findByLogin(userLogin) }
-        val dateFrom = date1?.let { LocalDate.parse(date1) }
-        val dateTo = date2?.let { LocalDate.parse(date2) }
+        val dateFrom = dateStrFrom?.let { LocalDate.parse(dateStrFrom) }
+        val dateTo = dareStrTo?.let { LocalDate.parse(dareStrTo) }
 
         if (dateFrom != null && dateTo != null){
             if (dateFrom>dateTo){
