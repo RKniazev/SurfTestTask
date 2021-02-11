@@ -7,7 +7,8 @@ import java.util.*
 class MathService {
     fun calculate(input: String): String {
         val strWithoutBrackets = openBrackets(input)
-        return math(strWithoutBrackets)
+        val result = math(strWithoutBrackets)
+        return deleteSpecSymbolForNegative(result)
     }
 
     fun openBrackets(str: String):String{
@@ -28,6 +29,14 @@ class MathService {
     }
 
     fun math(string: String):String{
+        if (isNegative(string)){
+            if (string.contains("[") && string.contains("]")){
+                return string
+            }else{
+                return addSpecSymbolForNegative(string.toInt())
+            }
+
+        }
         when (findNextAction(string)){
             '*' -> return math(tmpAction(string,'*'))
             '/' -> return math(tmpAction(string,'/'))
@@ -37,11 +46,10 @@ class MathService {
         return string
     }
 
-    fun findNextAction(str: String):Char?{
-        if (str.contains('/') or str.contains("*") ){
-            str.forEach {
-                if (it == '/' || it == '*'){ return it }
-            }
+    fun findNextAction(inpStr: String):Char?{
+        val str = "([\\[]-(\\d+)[\\]])".toRegex().replaceFirst(inpStr,"")
+        str.forEach {
+            if (it == '/' || it == '*'){ return it }
         }
         str.forEach {
             if ((it == '-') or (it == '+')){ return it }
@@ -51,29 +59,57 @@ class MathService {
 
     fun tmpAction(str: String, act: Char):String{
         val parts = str.split(act)
+        if (isNegative(str)){
+            return addSpecSymbolForNegative(str.toInt())
+        }
         val num1 = findLast(parts[0])
         val num2 = findFirst(parts[1])
+
         return when(act){
-            '*' -> str.replaceFirst("$num1$act$num2",(num1*num2).toString())
-            '/' -> str.replaceFirst("$num1$act$num2",(num1/num2).toString())
-            '-' -> str.replaceFirst("$num1$act$num2",(num1-num2).toString())
-            '+' -> str.replaceFirst("$num1$act$num2",(num1+num2).toString())
+            '*' -> str.replaceFirst(oldPartOfStr(num1,act,num2),addSpecSymbolForNegative((num1*num2)))
+            '/' -> str.replaceFirst(oldPartOfStr(num1,act,num2),addSpecSymbolForNegative((num1/num2)))
+            '-' -> str.replaceFirst(oldPartOfStr(num1,act,num2),addSpecSymbolForNegative((num1-num2)))
+            '+' -> str.replaceFirst(oldPartOfStr(num1,act,num2),addSpecSymbolForNegative((num1+num2)))
             else -> ""
         }
     }
 
+    fun oldPartOfStr(num1: Int, act: Char, num2: Int)= "${addSpecSymbolForNegative(num1)}$act${addSpecSymbolForNegative(num2)}"
+
+
     fun findLast(str: String) : Int{
-        val regexLast = "(\\d+)\$"
+        val regexLast = "([\\[]-(\\d+)[\\]]\$)|((\\d+)\$)"
         regexLast.toRegex().find(str)?.value?.let {
-            return it.toInt()
+            return deleteSpecSymbolForNegative(it).toInt()
         }
         return 0
     }
     fun findFirst(str: String) : Int{
-        val regexLast = "^(\\d+)"
+        val regexLast = "(^(\\d+))|^([\\[]-(\\d+)[\\]])"
         regexLast.toRegex().find(str)?.value?.let {
-            return it.toInt()
+            return deleteSpecSymbolForNegative(it).toInt()
         }
         return 0
+    }
+
+    fun isNegative(str: String):Boolean{
+        val regexNegative = "-(\\d+)".toRegex()
+        val regexNegativeWithBrackets = "[\\[]-(\\d+)[\\]]".toRegex()
+        regexNegative.find(str)?.let {
+            if (it.value == str){
+                return true
+            }
+        }
+        regexNegativeWithBrackets.find(str)?.let {
+            if (it.value == str){
+                return true
+            }
+        }
+        return false
+    }
+
+    fun deleteSpecSymbolForNegative(str: String) = str.replace("[","").replace("]","")
+    fun addSpecSymbolForNegative(int: Int):String{
+       return if (int>0) int.toString() else "[$int]"
     }
 }
